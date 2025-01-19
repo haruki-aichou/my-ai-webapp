@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog vs Cat Classifier</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+    <h1>犬と猫を判定するアプリ</h1>
+    <input type="file" id="file-input" accept="image/*">
+    <div id="output"></div>
+    <script>
+        // モデルを読み込む関数
+        async function loadModel() {
+            const model = await tf.loadLayersModel('model.json'); // モデルパスを確認
+            console.log('Model loaded successfully');
+            return model;
+        }
+
+        // 画像を処理してモデルで判定する関数
+        async function predictImage(file) {
+            const model = await loadModel(); // モデルをロード
+
+            // アップロードされた画像を読み込む
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.onload = async () => {
+                // 画像をTensorに変換
+                const tensor = tf.browser.fromPixels(img)
+                    .resizeNearestNeighbor([224, 224]) // モデルに適したサイズにリサイズ
+                    .expandDims() // バッチ次元を追加
+                    .toFloat()
+                    .div(tf.scalar(255)); // ピクセル値を0～1に正規化
+
+                // モデルで予測
+                const predictions = await model.predict(tensor).data();
+                console.log(predictions);
+
+                // 判定結果を表示
+                const result = predictions[0] > 0.5 ? '犬' : '猫'; // 0.5を閾値とする
+                document.getElementById('output').innerText = `判定結果: ${result}`;
+            };
+        }
+
+        // ファイルが選択されたときのイベント
+        document.getElementById('file-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                predictImage(file);
+            }
+        });
+    </script>
+</body>
+</html>
