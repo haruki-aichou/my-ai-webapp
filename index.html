@@ -13,7 +13,7 @@
     <script>
         // モデルを読み込む関数
         async function loadModel() {
-            const model = await tf.loadLayersModel('model.json'); // モデルパスを確認
+            const model = await tf.loadLayersModel('https://raw.githubusercontent.com/haruki-aichou/my-ai-webapp/main/model.json'); // モデルパスを確認
             console.log('Model loaded successfully');
             return model;
         }
