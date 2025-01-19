@@ -1,5 +1,5 @@
 // モデルのパス
-const MODEL_PATH = './model/model.json';
+const MODEL_PATH = 'https://github.com/haruki-aichou/my-ai-webapp/blob/main/model.json;
 
 // ファイルアップロード要素
 const imageInput = document.getElementById('imageInput');
